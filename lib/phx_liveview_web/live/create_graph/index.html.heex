@@ -1,0 +1,79 @@
+<main class="flex flex-col gap-16 sm:flex-row items-center justify-between py-8 px-6 ">
+  <div class="flex flex-col gap-6">
+    <span class="text-2xl font-bold capitalize">crear grafo</span>
+    <div class="flex flex-col gap-4">
+      <form phx-submit="create" class="flex flex-col gap-4">
+        <input
+          phx-change="update_name"
+          class="rounded"
+          name="name"
+          type="text"
+          placeholder="Nombre"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+        />
+        <select name="type" phx-change="toggle_directed" class="rounded">
+          <option
+            value="undirected"
+            selected={
+              if !@graph.directed do
+                "selected"
+              end
+            }
+          >
+            Grafo no dirigido
+          </option>
+          <option
+            value="directed"
+            selected={
+              if @graph.directed do
+                "selected"
+              end
+            }
+          >
+            Grafo dirigido
+          </option>
+        </select>
+        <input
+          phx-change="update_nodes"
+          name="nodes"
+          type="text"
+          id="nodes"
+          placeholder="Nodos (ej: A,B,C)"
+        />
+        <input
+          phx-change="update_edges"
+          name="edges"
+          type="text"
+          id="edges"
+          placeholder="Aristas (ej: A-B,B-C)"
+        />
+        <p class="text-sm text-zinc-500">
+          Si es ponderado, ponga el valor al final de la arista
+          <span class="text-nowrap">(ej: A-B:10, B-C:5)</span>
+        </p>
+        <button
+          type="submit"
+          class="bg-orange-500 p-4 py-2 rounded-lg text-white shadow-md hover:bg-orange-400"
+        >
+          Crear
+        </button>
+      </form>
+    </div>
+  </div>
+  <aside class="flex flex-col gap-6">
+    <span class="text-2xl font-bold capitalize">previsualizar</span>
+    <span>Grafo: <span class="font-bold">{@graph.name}</span></span>
+    <span>
+      Tipo:
+      <span class="font-bold">
+        {if @graph.directed do
+          "dirigido"
+        else
+          "no dirigido"
+        end}
+      </span>
+    </span>
+    <span>Nodos: <span class="font-bold">{Enum.count(@graph.nodes)}</span></span>
+    <span>Aristas: <span class="font-bold">{Enum.count(@graph.edges)}</span></span>
+  </aside>
+</main>
