@@ -32,4 +32,5 @@ RUN apt-get update && apt-get install -y inotify-tools
 
 COPY --from=builder /usr/src/app/_build/prod/rel/${APP_NAME} ./
 
+RUN echo $APP_NAME
 CMD ["bin/${APP_NAME}", "start"]
