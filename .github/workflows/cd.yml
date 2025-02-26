@@ -8,6 +8,7 @@ jobs:
   publish-docker-image:
     runs-on: ubuntu-latest
     env:
+      APP_NAME: "phx_liveview"
       MIX_ENV: "prod"
     steps:
       - name: Checkout code
@@ -25,7 +26,9 @@ jobs:
           context: ./
           push: true
           tags: ${{ github.repository }}:latest
-          build-args: MIX_ENV=${{ env.MIX_ENV }}
+          build-args: |
+            MIX_ENV=${{ env.MIX_ENV }}
+            APP_NAME=${{ env.APP_NAME }}
 
   deploy:
     runs-on: ubuntu-latest

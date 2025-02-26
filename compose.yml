@@ -17,6 +17,8 @@ services:
       target: builder
       args:
         MIX_ENV: dev
+        ELIXIR_VERSION: 1.17.3
+        OTP_VERSION: 27
     restart: unless-stopped
     ports:
       - "4000:4000"
