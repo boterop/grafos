@@ -25,7 +25,7 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
 
   @impl true
   def handle_event("update_name", %{"name" => name}, socket) do
-    formatted_name = name |> String.trim() |> String.downcase()
+    formatted_name = name |> String.trim() |> String.capitalize()
     {:noreply, assign(socket, graph: %{socket.assigns.graph | name: formatted_name})}
   end
 
@@ -66,9 +66,9 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
   @spec str_to_list(String.t()) :: list(String.t())
   def str_to_list(str) do
     str
-    |> String.trim()
     |> String.upcase()
     |> String.split(",")
+    |> Enum.map(&String.trim/1)
   catch
     _ -> []
   end

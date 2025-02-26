@@ -2,9 +2,10 @@
   <div class="flex flex-col gap-6">
     <span class="text-2xl font-bold capitalize">crear grafo</span>
     <div class="flex flex-col gap-4">
-      <form phx-submit="create" class="flex flex-col gap-4">
+      <form id="create-graph-form" phx-submit="create" class="flex flex-col gap-4">
         <input
           phx-change="update_name"
+          id="name"
           class="rounded"
           name="name"
           value={@graph.name}
@@ -36,18 +37,18 @@
         </select>
         <input
           phx-change="update_nodes"
+          id="nodes"
           name="nodes"
           value={Enum.join(@graph.nodes, ",")}
           type="text"
-          id="nodes"
           placeholder="Nodos (ej: A,B,C)"
         />
         <input
           phx-change="update_edges"
+          id="edges"
           name="edges"
           value={Enum.join(@graph.edges, ",")}
           type="text"
-          id="edges"
           placeholder="Aristas (ej: A-B,B-C)"
         />
         <p class="text-sm text-zinc-500">
@@ -58,6 +59,7 @@
           <p class="text-sm text-rose-600">{@error}</p>
         <% end %>
         <button
+          id="create-graph-submit"
           type="submit"
           class="bg-orange-500 p-4 py-2 rounded-lg text-white shadow-md hover:bg-orange-400"
         >
