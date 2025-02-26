@@ -19,6 +19,7 @@ defmodule PhxLiveviewWeb.Card do
     ~H"""
     <div class="relative aspect-w-1 ">
       <button
+        id={"delete-#{@graph.id}"}
         phx-click="delete"
         phx-value-id={@graph.id}
         type="button"
@@ -27,6 +28,7 @@ defmodule PhxLiveviewWeb.Card do
         <img src="/images/trash.svg" class="w-6" />
       </button>
       <a
+        id={"edit-graph-#{@graph.id}"}
         href={"/create-graph?id=#{@graph.id}"}
         class="flex flex-col gap-4 p-6 shadow-lg hover:shadow-xl rounded-lg border border-zinc-100 bg-white"
       >
