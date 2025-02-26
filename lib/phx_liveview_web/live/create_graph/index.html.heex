@@ -1,4 +1,4 @@
-<main class="flex flex-col gap-16 sm:flex-row items-center justify-between py-8 px-6 ">
+<main class="flex flex-col gap-16 sm:flex-row items-start justify-between">
   <div class="flex flex-col gap-6">
     <span class="text-2xl font-bold capitalize">crear grafo</span>
     <div class="flex flex-col gap-4">
@@ -7,6 +7,7 @@
           phx-change="update_name"
           class="rounded"
           name="name"
+          value={@graph.name}
           type="text"
           placeholder="Nombre"
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
@@ -36,6 +37,7 @@
         <input
           phx-change="update_nodes"
           name="nodes"
+          value={Enum.join(@graph.nodes, ",")}
           type="text"
           id="nodes"
           placeholder="Nodos (ej: A,B,C)"
@@ -43,6 +45,7 @@
         <input
           phx-change="update_edges"
           name="edges"
+          value={Enum.join(@graph.edges, ",")}
           type="text"
           id="edges"
           placeholder="Aristas (ej: A-B,B-C)"
@@ -51,11 +54,14 @@
           Si es ponderado, ponga el valor al final de la arista
           <span class="text-nowrap">(ej: A-B:10, B-C:5)</span>
         </p>
+        <%= if @error do %>
+          <p class="text-sm text-rose-600">{@error}</p>
+        <% end %>
         <button
           type="submit"
           class="bg-orange-500 p-4 py-2 rounded-lg text-white shadow-md hover:bg-orange-400"
         >
-          Crear
+          {if @graph.id, do: "Actualizar", else: "Crear"}
         </button>
       </form>
     </div>

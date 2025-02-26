@@ -4,10 +4,34 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
   """
 
   use PhxLiveviewWeb, :live_view
+  alias PhxLiveview.{Graph, Graphs}
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, graph: %{name: "", nodes: [], edges: [], directed: false})}
+  def mount(params, _session, socket) do
+    %Graph{id: id, name: name, nodes: nodes, edges: edges, directed: directed} =
+      graph =
+      with %{"id" => id} <- params,
+           %Graph{} = saved_graph <- Graphs.get_graph(id) do
+        saved_graph
+      else
+        _ -> %Graph{}
+      end
+
+    formatted_graph = %{
+      id: id,
+      name: name,
+      nodes: nodes,
+      edges: edges,
+      directed: directed
+    }
+
+    IO.inspect(formatted_graph)
+
+    {:ok,
+     socket
+     |> assign(original_graph: graph)
+     |> assign(graph: formatted_graph)
+     |> assign(error: nil)}
   end
 
   @impl true
@@ -31,13 +55,41 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
   end
 
   @impl true
+  def handle_event("update_edges", %{"edges" => edges}, socket) do
+    edges_list =
+      try do
+        edges
+        |> String.trim()
+        |> String.downcase()
+        |> String.split(",")
+      rescue
+        _ -> []
+      end
+
+    {:noreply, assign(socket, graph: %{socket.assigns.graph | edges: edges_list})}
+  end
+
+  @impl true
   def handle_event("toggle_directed", %{"type" => value}, socket) do
-    IO.inspect(value)
     {:noreply, assign(socket, graph: %{socket.assigns.graph | directed: value == "directed"})}
   end
 
   @impl true
-  def handle_event("register", _, socket) do
-    {:noreply, push_navigate(socket, to: "/register")}
+  def handle_event(
+        "create",
+        _,
+        %{assigns: %{graph: graph, original_graph: original_graph}} = socket
+      ) do
+    with {:ok, _graph} <- create_update(graph, original_graph) do
+      {:noreply, push_navigate(socket, to: "/")}
+    else
+      {:error, changeset} ->
+        [{key, value}] = changeset.errors
+        {:noreply, assign(socket, error: "#{key} #{inspect(value)}")}
+    end
   end
+
+  @spec create_update(map(), Graph.t()) :: {:ok, map()} | {:error, Ecto.Changeset.t()}
+  defp create_update(%{id: nil} = new_graph, _), do: Graphs.create_graph(new_graph)
+  defp create_update(%{} = attrs, original_graph), do: Graphs.update_graph(original_graph, attrs)
 end
