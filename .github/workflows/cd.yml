@@ -2,9 +2,7 @@ name: CD
 
 on:
   pull_request:
-    branches:
-      - main
-    types: closed
+    types: [closed, review_requested, ready_for_review, synchronize, opened]
 
 jobs:
   publish-docker-image:
