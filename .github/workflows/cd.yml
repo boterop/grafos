@@ -8,7 +8,7 @@ jobs:
   publish-docker-image:
     runs-on: ubuntu-latest
     env:
-      NODE_ENV: "prod"
+      MIX_ENV: "prod"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -25,6 +25,7 @@ jobs:
           context: ./
           push: true
           tags: ${{ github.repository }}:latest
+          build-args: MIX_ENV=${{ env.MIX_ENV }}
 
   deploy:
     runs-on: ubuntu-latest

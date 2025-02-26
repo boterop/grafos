@@ -12,7 +12,11 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
   phx_liveview:
-    build: .
+    build:
+      context: .
+      target: builder
+      args:
+        MIX_ENV: dev
     restart: unless-stopped
     ports:
       - "4000:4000"
@@ -21,7 +25,6 @@ services:
     env_file:
       - .env
     environment:
-      - MIX_ENV=dev
       - PORT=4000
     depends_on:
       - db
