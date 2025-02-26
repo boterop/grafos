@@ -31,31 +31,14 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
 
   @impl true
   def handle_event("update_nodes", %{"nodes" => nodes}, socket) do
-    nodes_list =
-      try do
-        nodes
-        |> String.trim()
-        |> String.upcase()
-        |> String.split(",")
-      rescue
-        _ -> []
-      end
+    nodes_list = str_to_list(nodes)
 
     {:noreply, assign(socket, graph: %{socket.assigns.graph | nodes: nodes_list})}
   end
 
   @impl true
   def handle_event("update_edges", %{"edges" => edges}, socket) do
-    edges_list =
-      try do
-        edges
-        |> String.trim()
-        |> String.downcase()
-        |> String.split(",")
-      rescue
-        _ -> []
-      end
-
+    edges_list = str_to_list(edges)
     {:noreply, assign(socket, graph: %{socket.assigns.graph | edges: edges_list})}
   end
 
@@ -76,6 +59,18 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
       {:error, changeset} ->
         [{key, {message, _}} | _rest] = changeset.errors
         {:noreply, assign(socket, error: "#{key} #{message}")}
+    end
+  end
+
+  @spec str_to_list(String.t()) :: list(String.t())
+  def str_to_list(str) do
+    try do
+      str
+      |> String.trim()
+      |> String.upcase()
+      |> String.split(",")
+    rescue
+      _ -> []
     end
   end
 
