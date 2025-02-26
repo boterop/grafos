@@ -53,9 +53,10 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
         _,
         %{assigns: %{graph: graph, original_graph: original_graph}} = socket
       ) do
-    with {:ok, _graph} <- create_update(graph, original_graph) do
-      {:noreply, push_navigate(socket, to: "/")}
-    else
+    case create_update(graph, original_graph) do
+      {:ok, _} ->
+        {:noreply, push_navigate(socket, to: "/")}
+
       {:error, changeset} ->
         [{key, {message, _}} | _rest] = changeset.errors
         {:noreply, assign(socket, error: "#{key} #{message}")}
@@ -64,14 +65,12 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
 
   @spec str_to_list(String.t()) :: list(String.t())
   def str_to_list(str) do
-    try do
-      str
-      |> String.trim()
-      |> String.upcase()
-      |> String.split(",")
-    rescue
-      _ -> []
-    end
+    str
+    |> String.trim()
+    |> String.upcase()
+    |> String.split(",")
+  catch
+    _ -> []
   end
 
   @spec create_update(map(), Graph.t()) :: {:ok, map()} | {:error, Ecto.Changeset.t()}

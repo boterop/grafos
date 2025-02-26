@@ -7,7 +7,8 @@ defmodule PhxLiveviewWeb.Live.Home.Index do
   import PhxLiveviewWeb.Card
   alias PhxLiveview.{Graph, Graphs}
 
-  def list_graphs(), do: Graphs.list_graphs() |> Enum.sort_by(& &1.id, :desc)
+  @spec list_graphs() :: list(Graph.t())
+  def list_graphs, do: Graphs.list_graphs() |> Enum.sort_by(& &1.id, :desc)
 
   @impl true
   def mount(_params, _session, socket) do
