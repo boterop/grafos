@@ -8,8 +8,7 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
 
   @impl true
   def mount(params, _session, socket) do
-    %Graph{id: id, name: name, nodes: nodes, edges: edges, directed: directed} =
-      graph =
+    graph =
       with %{"id" => id} <- params,
            %Graph{} = saved_graph <- Graphs.get_graph(id) do
         saved_graph
