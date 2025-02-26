@@ -4,16 +4,15 @@ defmodule PhxLiveview.Test.Fixtures.Graph do
   entities via the `PhxLiveview.Graphs` context.
   """
 
-  alias PhxLiveview.Graphs
+  alias PhxLiveview.{Graph, Repo}
 
-  @doc """
-  Generate a graph.
-  """
-  def graph_fixture(attrs \\ %{}) do
+  def graph_fixture(attrs \\ []) do
     name = Keyword.get(attrs, :name, "some name")
     edges = Keyword.get(attrs, :edges, [])
     nodes = Keyword.get(attrs, :nodes, [])
 
-    Graphs.create_graph(%{name: name, edges: edges, nodes: nodes})
+    %Graph{}
+    |> Graph.changeset(%{name: name, edges: edges, nodes: nodes})
+    |> Repo.insert!()
   end
 end

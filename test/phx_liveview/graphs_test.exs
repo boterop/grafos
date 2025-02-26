@@ -1,6 +1,6 @@
-defmodule PhxLiveview.GraphsTest do
+defmodule PhxLiveview.Test.Graphs do
   use PhxLiveview.DataCase
-
+  import PhxLiveview.Test.Fixtures.Graph
   alias PhxLiveview.{Graph, Graphs}
 
   describe "graphs" do
@@ -22,9 +22,16 @@ defmodule PhxLiveview.GraphsTest do
     end
 
     test "create_graph/1 with valid data creates a graph" do
-      {:ok,
-       %Graph{name: ^@valid_attrs.name, nodes: ^@valid_attrs.nodes, edges: ^@valid_attrs.edges}} =
-        Graphs.create_graph(@valid_attrs)
+      %{edges: edges, nodes: nodes} = @valid_attrs
+      name = "some other name"
+
+      {:ok, %Graph{name: ^name, nodes: ^nodes, edges: ^edges}} =
+        Graphs.create_graph(%{@valid_attrs | name: name})
+    end
+
+    test "create_graph/1 with duplicated name", %{graph: %{name: name}} do
+      {:error, %Ecto.Changeset{errors: [name: {"has already been taken", _}]}} =
+        Graphs.create_graph(%{name: name})
     end
 
     test "create_graph/1 with invalid data returns error changeset" do
@@ -32,12 +39,15 @@ defmodule PhxLiveview.GraphsTest do
     end
 
     test "update_graph/2 with valid data updates the graph", %{graph: %{id: id} = graph} do
-      %Graph{
-        id: ^id,
-        name: @update_attrs.name,
-        nodes: @update_attrs.nodes,
-        edges: @update_attrs.edges
-      } =
+      %{name: name, edges: edges, nodes: nodes} = @update_attrs
+
+      {:ok,
+       %Graph{
+         id: ^id,
+         name: ^name,
+         nodes: ^nodes,
+         edges: ^edges
+       }} =
         Graphs.update_graph(graph, @update_attrs)
     end
 
@@ -47,7 +57,7 @@ defmodule PhxLiveview.GraphsTest do
     end
 
     test "delete_graph/1 deletes the graph" do
-      %{id: id} = graph = graph_fixture()
+      %{id: id} = graph = graph_fixture(name: "graph to delete")
       {:ok, %Graph{id: ^id}} = Graphs.delete_graph(graph)
       nil = Graphs.get_graph(id)
     end
