@@ -17,26 +17,17 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
         _ -> %Graph{}
       end
 
-    formatted_graph = %{
-      id: id,
-      name: name,
-      nodes: nodes,
-      edges: edges,
-      directed: directed
-    }
-
-    IO.inspect(formatted_graph)
-
     {:ok,
      socket
      |> assign(original_graph: graph)
-     |> assign(graph: formatted_graph)
+     |> assign(graph: Map.from_struct(graph))
      |> assign(error: nil)}
   end
 
   @impl true
   def handle_event("update_name", %{"name" => name}, socket) do
-    {:noreply, assign(socket, graph: %{socket.assigns.graph | name: name})}
+    formatted_name = name |> String.trim() |> String.downcase()
+    {:noreply, assign(socket, graph: %{socket.assigns.graph | name: formatted_name})}
   end
 
   @impl true
@@ -84,8 +75,8 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
       {:noreply, push_navigate(socket, to: "/")}
     else
       {:error, changeset} ->
-        [{key, value}] = changeset.errors
-        {:noreply, assign(socket, error: "#{key} #{inspect(value)}")}
+        [{key, {message, _}} | _rest] = changeset.errors
+        {:noreply, assign(socket, error: "#{key} #{message}")}
     end
   end
 
