@@ -23,7 +23,8 @@ defmodule PhxLiveviewWeb.Router do
   scope "/", PhxLiveviewWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", Live.Home.Index, :index
+    live "/create-graph", Live.CreateGraph.Index, :index
     live "/login", Live.Login.Index, :index
     live "/register", Live.Register.Index, :index
   end
