@@ -25,6 +25,10 @@ RUN if [ "$MIX_ENV" = "prod" ]; then mix release; else mix start; fi
 FROM debian:bullseye-slim as runner
 WORKDIR /app
 
+RUN apt-get update -y && \
+  apt-get install -y libstdc++6 openssl libncurses5 locales ca-certificates \
+  && apt-get clean && rm -f /var/lib/apt/lists/*_*
+
 ARG APP_NAME
 ENV APP_NAME=${APP_NAME}
 
