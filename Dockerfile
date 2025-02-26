@@ -31,5 +31,6 @@ ENV APP_NAME=${APP_NAME}
 RUN apt-get update && apt-get install -y inotify-tools
 
 COPY --from=builder /app/_build/prod/rel/${APP_NAME} ./
+RUN mv /app/bin/${APP_NAME} /app/bin/server
 
-CMD ["/app/bin/${APP_NAME}", "start"]
+CMD ["/app/bin/server", "start"]
