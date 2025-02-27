@@ -27,7 +27,7 @@ if config_env() == :prod do
   database = System.get_env("DB_NAME")
 
   if !username || !password || !hostname || !database do
-    raise "missing environment database80nfiguration"
+    raise "missing environment database configuration"
   end
 
   database_url = "ecto://#{username}:#{password}@#{hostname}/#{database}"
@@ -60,12 +60,14 @@ if config_env() == :prod do
   config :phx_liveview, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
   config :phx_liveview, PhxLiveviewWeb.Endpoint,
-    url: [host: host, port: 80, scheme: "https"],
-    http: [port: port, transport_options: [socket_opts: [:inet6]]],
-    check_origin: [
-      "https://#{host}",
-      "https://#{host}:#{port}",
-      "http://#{host}:#{port}"
+    url: [host: host, port: 443, scheme: "https"],
+    http: [
+      # Enable IPv6 and bind on all interfaces.
+      # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
+      # See the documentation on https://hexdocs.pm/bandit/Bandit.html#t:options/0
+      # for details about using IPv6 vs IPv4 and loopback vs public addresses.
+      ip: {0, 0, 0, 0, 0, 0, 0, 0},
+      port: port
     ],
     secret_key_base: secret_key_base
 
