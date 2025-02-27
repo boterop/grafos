@@ -2,5 +2,4 @@
 set -eu
 
 cd -P -- "$(dirname -- "$0")"
-exec ./phx_liveview eval PhxLiveview.Release.migrate
 PHX_SERVER=true exec ./phx_liveview start
