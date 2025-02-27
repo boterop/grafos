@@ -1,7 +1,7 @@
 ARG ELIXIR_VERSION=1.17.3
 ARG OTP_VERSION=27
 
-FROM elixir:${ELIXIR_VERSION} as builder
+FROM elixir:${ELIXIR_VERSION} AS builder
 WORKDIR /app
 
 ARG MIX_ENV=dev
@@ -22,7 +22,7 @@ RUN mix do assets.deploy, phx.digest, compile
 EXPOSE 4000
 RUN if [ "$MIX_ENV" = "prod" ]; then mix release; else mix start; fi
 
-FROM elixir:${ELIXIR_VERSION} as runner
+FROM elixir:${ELIXIR_VERSION} AS runner
 WORKDIR /app
 RUN chown nobody /app
 
