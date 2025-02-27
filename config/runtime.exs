@@ -61,7 +61,7 @@ if config_env() == :prod do
 
   config :phx_liveview, PhxLiveviewWeb.Endpoint,
     url: [host: host, port: 80, scheme: "https"],
-    http: [port: port, transport_options: [socket_opts: maybe_ipv6]],
+    http: [port: port, transport_options: [socket_opts: [:inet6]]],
     check_origin: [
       "https://#{host}",
       "https://#{host}:#{port}",
