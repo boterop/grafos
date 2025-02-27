@@ -30,8 +30,7 @@ ARG APP_NAME
 ENV APP_NAME=${APP_NAME}
 
 COPY --from=builder /app/_build/prod/rel/${APP_NAME} ./
-RUN mv /app/bin/${APP_NAME} /app/bin/server
 
 USER nobody
 
-CMD ["/app/bin/server", "start"]
+CMD ["/app/bin/server"]
