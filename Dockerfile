@@ -26,7 +26,7 @@ FROM debian:bullseye-slim as runner
 WORKDIR /app
 
 RUN apt-get update -y && \
-  apt-get install -y libstdc++6 openssl libncurses5 locales ca-certificates \
+  apt-get install -y libstdc++6 libc6 openssl libncurses5 locales ca-certificates \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 ARG APP_NAME
