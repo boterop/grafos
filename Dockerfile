@@ -22,19 +22,16 @@ RUN mix do phx.digest, compile
 EXPOSE 4000
 RUN if [ "$MIX_ENV" = "prod" ]; then mix release; else mix start; fi
 
-FROM debian:bullseye-slim as runner
+FROM elixir:${ELIXIR_VERSION} as runner
 WORKDIR /app
-
-RUN apt-get update -y && \
-  apt-get install -y libstdc++6 libc6 openssl libncurses5 locales ca-certificates \
-  && apt-get clean && rm -f /var/lib/apt/lists/*_*
+RUN chown nobody /app
 
 ARG APP_NAME
 ENV APP_NAME=${APP_NAME}
 
-RUN apt-get update && apt-get install -y inotify-tools
-
 COPY --from=builder /app/_build/prod/rel/${APP_NAME} ./
 RUN mv /app/bin/${APP_NAME} /app/bin/server
+
+USER nobody
 
 CMD ["/app/bin/server", "start"]
