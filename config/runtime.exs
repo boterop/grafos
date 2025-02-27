@@ -32,12 +32,6 @@ if config_env() == :prod do
 
   database_url = "ecto://#{username}:#{password}@#{hostname}/#{database}"
 
-  check_origin: [
-    "https://#{host}",
-      "https://www.#{host}",
-      "https://#{host}:#{port}",
-      "https://www.#{host}:#{port}"
-  ],
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
   config :phx_liveview, PhxLiveview.Repo,
@@ -67,14 +61,11 @@ if config_env() == :prod do
 
   config :phx_liveview, PhxLiveviewWeb.Endpoint,
     url: [host: host, port: 80, scheme: "https"],
-    http: [
-      port: port,
-      transport_options: [socket_opts: maybe_ipv6]
-    ],
+    http: [port: port, transport_options: [socket_opts: maybe_ipv6]],
     check_origin: [
       "https://#{host}",
       "https://#{host}:#{port}",
-      "http://#{host}:#{port}",
+      "http://#{host}:#{port}"
     ],
     secret_key_base: secret_key_base
 
