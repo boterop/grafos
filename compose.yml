@@ -21,7 +21,7 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - .:/usr/src/app
+      - .:/app
     env_file:
       - .env
     environment:
