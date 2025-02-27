@@ -1,3 +1,7 @@
-tests
-deps
-_build
+_build/
+deps/
+.git/
+.gitignore
+Dockerfile
+*.md
+test/

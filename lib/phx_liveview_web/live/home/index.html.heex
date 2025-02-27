@@ -1,0 +1,18 @@
+<main class="flex flex-col gap-8">
+  <div class="flex justify-between">
+    <span class="text-2xl font-bold capitalize">mis grafos</span>
+    <a
+      id="create-graph"
+      href="/create-graph"
+      class="flex items-center bg-orange-500 p-4 py-2 rounded-lg text-white shadow-md hover:bg-orange-400"
+    >
+      <img src="/images/plus.svg" class="w-6 mr-2" />
+      <span class="capitalize">crear grafo</span>
+    </a>
+  </div>
+  <article class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <%= for graph <- @graphs do %>
+      <.card graph={graph} />
+    <% end %>
+  </article>
+</main>

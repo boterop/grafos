@@ -21,12 +21,16 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
-  database_url =
-    System.get_env("DATABASE_URL") ||
-      raise """
-      environment variable DATABASE_URL is missing.
-      For example: ecto://USER:PASS@HOST/DATABASE
-      """
+  username = System.get_env("DB_USER")
+  password = System.get_env("DB_PASSWORD")
+  hostname = System.get_env("DB_HOST")
+  database = System.get_env("DB_NAME")
+
+  if !username || !password || !hostname || !database do
+    raise "missing environment database configuration"
+  end
+
+  database_url = "ecto://#{username}:#{password}@#{hostname}/#{database}"
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
@@ -41,10 +45,12 @@ if config_env() == :prod do
   # want to use a different value for prod and you most likely don't want
   # to check this value into version control, so we use an environment
   # variable instead.
+  secret_env_key = "SECRET_KEY"
+
   secret_key_base =
-    System.get_env("SECRET_KEY_BASE") ||
+    System.get_env(secret_env_key) ||
       raise """
-      environment variable SECRET_KEY_BASE is missing.
+      environment variable #{secret_env_key} is missing.
       You can generate one by calling: mix phx.gen.secret
       """
 
