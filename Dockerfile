@@ -17,7 +17,7 @@ RUN mix deps.get --only $MIX_ENV
 
 COPY . .
 
-RUN mix do phx.digest, compile
+RUN mix do assets.deploy, phx.digest, compile
 
 EXPOSE 4000
 RUN if [ "$MIX_ENV" = "prod" ]; then mix release; else mix start; fi
