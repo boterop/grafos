@@ -30,20 +30,19 @@ defmodule PhxLiveviewWeb.Card do
       <a
         id={"edit-graph-#{@graph.id}"}
         href={"/create-graph?id=#{@graph.id}"}
-        class="flex flex-col gap-4 p-6 shadow-lg hover:shadow-xl rounded-lg border border-zinc-100 bg-white"
+        class="flex flex-col gap-2 p-6 shadow-lg hover:shadow-xl rounded-lg border border-zinc-100 bg-white"
       >
         <h3 class="flex items-center justify-between text-lg font-semibold leading-6 text-zinc-900 capitalize">
           {@graph.name}
-          <span class="text-sm text-zinc-500">
-            {if @graph.directed do
-              "dirigido"
-            else
-              "no dirigido"
-            end}
-          </span>
         </h3>
-
-        <article class="flex gap-4">
+        <span class="text-sm text-center text-nowrap text-zinc-500">
+          {if @graph.directed do
+            "dirigido"
+          else
+            "no dirigido"
+          end}
+        </span>
+        <article class="flex justify-between">
           <span>Nodos: <span class="font-bold">{Enum.count(@graph.nodes)}</span></span>
           <span>Aristas: <span class="font-bold">{Enum.count(@graph.edges)}</span></span>
         </article>
