@@ -20,7 +20,7 @@ COPY . .
 RUN mix do assets.deploy, phx.digest, compile
 
 EXPOSE 4000
-RUN if [ "$MIX_ENV" = "prod" ]; then mix release; else mix start; fi
+RUN if [ "$MIX_ENV" = "prod" ]; then mix do phx.gen.release, release; else mix start; fi
 
 FROM elixir:${ELIXIR_VERSION} AS runner
 WORKDIR /app
