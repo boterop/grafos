@@ -16,11 +16,14 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
         _ -> %Graph{}
       end
 
+    data = Map.from_struct(graph)
+    img = update_preview(data)
+
     {:ok,
      socket
      |> assign(original_graph: graph)
-     |> assign(graph: Map.from_struct(graph))
-     |> assign(graph_img: nil)
+     |> assign(graph: data)
+     |> assign(graph_img: img)
      |> assign(error: nil)}
   end
 
@@ -31,21 +34,26 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
   end
 
   @impl true
-  def handle_event("update_nodes", %{"nodes" => nodes}, socket) do
-    nodes_list = str_to_list(nodes)
-
-    {:noreply, assign(socket, graph: %{socket.assigns.graph | nodes: nodes_list})}
-  end
-
-  @impl true
   def handle_event("update_edges", %{"edges" => edges}, socket) do
+    nodes_list =
+      edges
+      |> String.split(",")
+      |> Enum.map(&get_node_from_edge/1)
+      |> Enum.uniq()
+      |> Enum.sort()
+      |> Enum.filter(&(&1 != ""))
+
     edges_list = str_to_list(edges)
-    {:noreply, assign(socket, graph: %{socket.assigns.graph | edges: edges_list})}
+    new_graph = %{socket.assigns.graph | edges: edges_list}
+    new_graph = %{new_graph | nodes: nodes_list}
+    IO.inspect(new_graph)
+    {:noreply, assign(socket, graph: new_graph, graph_img: update_preview(new_graph))}
   end
 
   @impl true
   def handle_event("toggle_directed", %{"type" => value}, socket) do
-    {:noreply, assign(socket, graph: %{socket.assigns.graph | directed: value == "directed"})}
+    new_graph = %{socket.assigns.graph | directed: value == "directed"}
+    {:noreply, assign(socket, graph: new_graph, graph_img: update_preview(new_graph))}
   end
 
   @impl true
@@ -64,11 +72,17 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
     end
   end
 
-  @impl true
-  def handle_event("update_preview", _, socket) do
-    try do
-      graph = socket.assigns.graph
+  def get_node_from_edge(edge) do
+    [source | _rest] = String.split(edge, "-")
 
+    source
+    |> String.trim()
+    |> String.upcase()
+  end
+
+  @spec update_preview(map()) :: String.t() | nil
+  def update_preview(graph) do
+    try do
       formatted_graph =
         %{
           nodes: graph.nodes,
@@ -93,10 +107,9 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
             nil
         end
 
-      base64_img = if image, do: "data:image/png;base64,#{Base.encode64(image)}", else: nil
-      {:noreply, assign(socket, graph_img: base64_img)}
+      if image, do: "data:image/png;base64,#{Base.encode64(image)}", else: nil
     rescue
-      _ -> {:noreply, assign(socket, graph_img: nil)}
+      _ -> nil
     end
   end
 
@@ -118,6 +131,7 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
     |> String.upcase()
     |> String.split(",")
     |> Enum.map(&String.trim/1)
+    |> Enum.filter(&(&1 != ""))
   catch
     _ -> []
   end
