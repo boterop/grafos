@@ -1,6 +1,6 @@
-<main class="flex flex-col gap-16 sm:flex-row items-start justify-between">
+<main class="grid grid-cols-1 md:grid-cols-2 gap-16 sm:flex-row items-start justify-between">
   <div class="flex flex-col gap-6">
-    <span class="text-2xl font-bold capitalize">crear grafo</span>
+    <h1 class="text-2xl font-bold capitalize">crear grafo</h1>
     <div class="flex flex-col gap-4">
       <form id="create-graph-form" phx-submit="create" class="flex flex-col gap-4">
         <input
@@ -69,19 +69,12 @@
     </div>
   </div>
   <aside class="flex flex-col gap-6">
-    <span class="text-2xl font-bold capitalize">previsualizar</span>
-    <span>Grafo: <span class="font-bold">{@graph.name}</span></span>
-    <span>
-      Tipo:
-      <span class="font-bold">
-        {if @graph.directed do
-          "dirigido"
-        else
-          "no dirigido"
-        end}
-      </span>
-    </span>
-    <span>Nodos: <span class="font-bold">{Enum.count(@graph.nodes)}</span></span>
-    <span>Aristas: <span class="font-bold">{Enum.count(@graph.edges)}</span></span>
+    <h1 class="text-2xl font-bold capitalize">previsualizar</h1>
+    <button phx-click="update_preview" class="bg-orange-500 p-4 py-2 rounded-lg text-white shadow-md hover:bg-orange-400">
+      Actualizar
+    </button>
+    <%= if @graph_img do %>
+      <img src={@graph_img} alt="grafo" />
+    <% end %>
   </aside>
 </main>

@@ -20,6 +20,7 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
      socket
      |> assign(original_graph: graph)
      |> assign(graph: Map.from_struct(graph))
+     |> assign(graph_img: nil)
      |> assign(error: nil)}
   end
 
@@ -62,6 +63,54 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
         {:noreply, assign(socket, error: "#{key} #{message}")}
     end
   end
+
+  @impl true
+  def handle_event("update_preview", _, socket) do
+    try do
+      graph = socket.assigns.graph
+
+      formatted_graph =
+        %{
+          nodes: graph.nodes,
+          edges: graph.edges |> Enum.map(&format_edge/1)
+        }
+        |> Jason.encode!()
+
+      type = if graph.directed, do: "directed", else: "undirected"
+
+      image =
+        case HTTPoison.post(
+               "#{System.get_env("API_URL")}/graph/create/#{type}",
+               formatted_graph,
+               %{
+                 "Content-Type" => "application/json"
+               }
+             ) do
+          {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+            body
+
+          _ ->
+            nil
+        end
+
+      base64_img = if image, do: "data:image/png;base64,#{Base.encode64(image)}", else: nil
+      {:noreply, assign(socket, graph_img: base64_img)}
+    rescue
+      _ -> {:noreply, assign(socket, graph_img: nil)}
+    end
+  end
+
+  @spec format_edge(String.t()) :: map()
+  def format_edge(edge) do
+    [source | rest] = String.split(edge, "-")
+    [target | weight] = rest |> Enum.join("") |> String.trim() |> String.split(":")
+
+    %{source: source, target: target, weight: format_weight(weight)}
+  end
+
+  @spec format_weight(list(String.t())) :: number()
+  def format_weight([]), do: 0
+  def format_weight([weight | _]), do: String.to_integer(weight)
 
   @spec str_to_list(String.t()) :: list(String.t())
   def str_to_list(str) do
