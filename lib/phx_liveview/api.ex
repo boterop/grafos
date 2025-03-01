@@ -3,21 +3,24 @@ defmodule PhxLiveview.API do
   API requests
   """
 
-  @type graph :: %{nodes: list(), edges: list(), directed: boolean()}
-  @type reason :: atom()
-  @type type :: :directed | :undirected
+  @typep graph :: %{nodes: list(), edges: list(), directed: boolean()}
+  @typep reason :: atom()
+  @typep type :: :directed | :undirected
 
-  @spec create_graph(graph()) :: {:ok, binary()} | {:error, reason()}
+  @spec create_graph(graph()) :: {:ok, any()} | {:error, reason()}
   def create_graph(graph) do
-    with request_body <- create_graph_request(graph),
-         type <- get_graph_type(graph),
-         url <- create_url(type),
-         {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- post(url, request_body) do
-      {:ok, body}
+    request_body = create_graph_request(graph)
+    type = get_graph_type(graph)
+    url = "#{System.get_env("API_URL")}/create/#{type}"
+
+    case post(url, request_body) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> {:ok, body}
+      {:error, reason} -> {:error, reason}
+      _ -> {:error, :unknown}
     end
   end
 
-  @spec create_graph_request(%{nodes: list(), edges: list()}) :: map()
+  @spec create_graph_request(graph()) :: map()
   defp create_graph_request(%{nodes: nodes, edges: edges}) do
     %{
       nodes: nodes,
@@ -28,7 +31,7 @@ defmodule PhxLiveview.API do
 
   defp create_graph_request(_), do: %{}
 
-  @spec get_graph_type(%{directed: boolean()}) :: type()
+  @spec get_graph_type(map()) :: type()
   defp get_graph_type(%{directed: directed}) when directed, do: :directed
   defp get_graph_type(_), do: :undirected
 
@@ -54,9 +57,6 @@ defmodule PhxLiveview.API do
   @spec format_weight(list(String.t())) :: number()
   defp format_weight([]), do: 0
   defp format_weight([weight | _]), do: String.to_integer(weight)
-
-  @spec create_url(type()) :: String.t()
-  defp create_url(type), do: "#{System.get_env("API_URL")}/create/#{type}"
 
   @spec http_client :: module()
   defp http_client do
