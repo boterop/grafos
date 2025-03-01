@@ -81,39 +81,34 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
 
   @spec update_preview(map()) :: String.t() | nil
   def update_preview(graph) do
-    try do
-      request_body =
-        %{
-          nodes: graph.nodes,
-          edges: graph.edges |> Enum.map(&format_edge/1),
-          node_color: "#f97316"
-        }
-        |> Jason.encode!()
+    request_body =
+      %{
+        nodes: graph.nodes,
+        edges: graph.edges |> Enum.map(&format_edge/1),
+        node_color: "#f97316"
+      }
+      |> Jason.encode!()
 
-      type = if graph.directed, do: "directed", else: "undirected"
+    type = if graph.directed, do: "directed", else: "undirected"
 
-      IO.inspect("#{System.get_env("API_URL")}/create/#{type}")
+    image =
+      case HTTPoison.post(
+             "#{System.get_env("API_URL")}/create/#{type}",
+             request_body,
+             %{
+               "Content-Type" => "application/json"
+             }
+           ) do
+        {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+          body
 
-      image =
-        case HTTPoison.post(
-               "#{System.get_env("API_URL")}/create/#{type}",
-               request_body,
-               %{
-                 "Content-Type" => "application/json"
-               }
-             ) do
-          {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-            body
+        _ ->
+          nil
+      end
 
-          e ->
-            IO.inspect(e)
-            nil
-        end
-
-      if image, do: "data:image/png;base64,#{Base.encode64(image)}", else: nil
-    rescue
-      _ -> nil
-    end
+    if image, do: "data:image/png;base64,#{Base.encode64(image)}", else: nil
+  rescue
+    _ -> nil
   end
 
   @spec format_edge(String.t()) :: map()
