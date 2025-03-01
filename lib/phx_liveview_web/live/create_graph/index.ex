@@ -88,6 +88,8 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
       |> String.upcase()
 
     [source, target]
+  rescue
+    _ -> []
   end
 
   @spec update_preview(map()) :: String.t() | nil
