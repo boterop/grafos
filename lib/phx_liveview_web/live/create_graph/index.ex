@@ -46,7 +46,6 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
     edges_list = str_to_list(edges)
     new_graph = %{socket.assigns.graph | edges: edges_list}
     new_graph = %{new_graph | nodes: nodes_list}
-    IO.inspect(new_graph)
     {:noreply, assign(socket, graph: new_graph, graph_img: update_preview(new_graph))}
   end
 
@@ -83,19 +82,22 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
   @spec update_preview(map()) :: String.t() | nil
   def update_preview(graph) do
     try do
-      formatted_graph =
+      request_body =
         %{
           nodes: graph.nodes,
-          edges: graph.edges |> Enum.map(&format_edge/1)
+          edges: graph.edges |> Enum.map(&format_edge/1),
+          node_color: "#f97316"
         }
         |> Jason.encode!()
 
       type = if graph.directed, do: "directed", else: "undirected"
 
+      IO.inspect("#{System.get_env("API_URL")}/create/#{type}")
+
       image =
         case HTTPoison.post(
-               "#{System.get_env("API_URL")}/graph/create/#{type}",
-               formatted_graph,
+               "#{System.get_env("API_URL")}/create/#{type}",
+               request_body,
                %{
                  "Content-Type" => "application/json"
                }
@@ -103,7 +105,8 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
           {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
             body
 
-          _ ->
+          e ->
+            IO.inspect(e)
             nil
         end
 
