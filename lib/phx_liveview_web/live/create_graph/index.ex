@@ -38,7 +38,8 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
     nodes_list =
       edges
       |> String.split(",")
-      |> Enum.map(&get_node_from_edge/1)
+      |> Enum.map(&get_nodes_from_edge/1)
+      |> List.flatten()
       |> Enum.uniq()
       |> Enum.sort()
       |> Enum.filter(&(&1 != ""))
@@ -71,12 +72,22 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
     end
   end
 
-  def get_node_from_edge(edge) do
-    [source | _rest] = String.split(edge, "-")
+  def get_nodes_from_edge(edge) do
+    [source | [target]] = String.split(edge, "-")
 
-    source
-    |> String.trim()
-    |> String.upcase()
+    source =
+      source
+      |> String.trim()
+      |> String.upcase()
+
+    target =
+      target
+      |> String.split(":")
+      |> List.first()
+      |> String.trim()
+      |> String.upcase()
+
+    [source, target]
   end
 
   @spec update_preview(map()) :: String.t() | nil
