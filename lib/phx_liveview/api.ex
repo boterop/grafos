@@ -34,7 +34,7 @@ defmodule PhxLiveview.API do
 
   @spec post(url :: String.t(), body :: map()) :: {:ok, map()} | {:error, reason()}
   defp post(url, body) do
-    HTTPoison.post(
+    http_client().post(
       url,
       Jason.encode!(body),
       %{
@@ -57,4 +57,11 @@ defmodule PhxLiveview.API do
 
   @spec create_url(type()) :: String.t()
   defp create_url(type), do: "#{System.get_env("API_URL")}/create/#{type}"
+
+  @spec http_client :: module()
+  defp http_client do
+    :phx_liveview
+    |> Application.get_env(:api)
+    |> Keyword.get(:http_client, HTTPoison)
+  end
 end
