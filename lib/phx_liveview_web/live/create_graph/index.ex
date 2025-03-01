@@ -4,7 +4,7 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
   """
 
   use PhxLiveviewWeb, :live_view
-  alias PhxLiveview.{Graph, Graphs}
+  alias PhxLiveview.{API, Graph, Graphs}
 
   @impl true
   def mount(params, _session, socket) do
@@ -94,47 +94,16 @@ defmodule PhxLiveviewWeb.Live.CreateGraph.Index do
 
   @spec update_preview(map()) :: String.t() | nil
   def update_preview(graph) do
-    request_body =
-      %{
-        nodes: graph.nodes,
-        edges: graph.edges |> Enum.map(&format_edge/1),
-        node_color: "#f97316"
-      }
-      |> Jason.encode!()
+    case API.create_graph(graph) do
+      {:ok, body} ->
+        "data:image/png;base64,#{Base.encode64(body)}"
 
-    type = if graph.directed, do: "directed", else: "undirected"
-
-    image =
-      case HTTPoison.post(
-             "#{System.get_env("API_URL")}/create/#{type}",
-             request_body,
-             %{
-               "Content-Type" => "application/json"
-             }
-           ) do
-        {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-          body
-
-        _ ->
-          nil
-      end
-
-    if image, do: "data:image/png;base64,#{Base.encode64(image)}", else: nil
+      _ ->
+        nil
+    end
   rescue
     _ -> nil
   end
-
-  @spec format_edge(String.t()) :: map()
-  def format_edge(edge) do
-    [source | rest] = String.split(edge, "-")
-    [target | weight] = rest |> Enum.join("") |> String.trim() |> String.split(":")
-
-    %{source: source, target: target, weight: format_weight(weight)}
-  end
-
-  @spec format_weight(list(String.t())) :: number()
-  def format_weight([]), do: 0
-  def format_weight([weight | _]), do: String.to_integer(weight)
 
   @spec str_to_list(String.t()) :: list(String.t())
   def str_to_list(str) do
