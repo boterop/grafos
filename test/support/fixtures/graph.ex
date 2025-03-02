@@ -10,9 +10,10 @@ defmodule PhxLiveview.Test.Fixtures.Graph do
     name = Keyword.get(attrs, :name, "some name")
     edges = Keyword.get(attrs, :edges, [])
     nodes = Keyword.get(attrs, :nodes, [])
+    directed = Keyword.get(attrs, :directed, false)
 
     %Graph{}
-    |> Graph.changeset(%{name: name, edges: edges, nodes: nodes})
+    |> Graph.changeset(%{name: name, edges: edges, nodes: nodes, directed: directed})
     |> Repo.insert!()
   end
 end

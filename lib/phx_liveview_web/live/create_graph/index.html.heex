@@ -1,6 +1,6 @@
-<main class="flex flex-col gap-16 sm:flex-row items-start justify-between">
+<main class="grid grid-cols-1 lg:grid-cols-2 gap-16 sm:flex-row items-start justify-between">
   <div class="flex flex-col gap-6">
-    <span class="text-2xl font-bold capitalize">crear grafo</span>
+    <h1 class="text-2xl font-bold capitalize">crear grafo</h1>
     <div class="flex flex-col gap-4">
       <form id="create-graph-form" phx-submit="create" class="flex flex-col gap-4">
         <input
@@ -36,14 +36,6 @@
           </option>
         </select>
         <input
-          phx-change="update_nodes"
-          id="nodes"
-          name="nodes"
-          value={Enum.join(@graph.nodes, ",")}
-          type="text"
-          placeholder="Nodos (ej: A,B,C)"
-        />
-        <input
           phx-change="update_edges"
           id="edges"
           name="edges"
@@ -69,19 +61,9 @@
     </div>
   </div>
   <aside class="flex flex-col gap-6">
-    <span class="text-2xl font-bold capitalize">previsualizar</span>
-    <span>Grafo: <span class="font-bold">{@graph.name}</span></span>
-    <span>
-      Tipo:
-      <span class="font-bold">
-        {if @graph.directed do
-          "dirigido"
-        else
-          "no dirigido"
-        end}
-      </span>
-    </span>
-    <span>Nodos: <span class="font-bold">{Enum.count(@graph.nodes)}</span></span>
-    <span>Aristas: <span class="font-bold">{Enum.count(@graph.edges)}</span></span>
+    <h1 class="text-2xl text-center font-bold capitalize">previsualizar</h1>
+    <%= if @graph_img do %>
+      <img src={@graph_img} alt="grafo" loading="lazy" />
+    <% end %>
   </aside>
 </main>

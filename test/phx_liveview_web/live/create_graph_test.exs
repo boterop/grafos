@@ -31,7 +31,7 @@ defmodule PhxLiveviewWeb.Test.Live.CreateGraph do
 
   test "GET /create-graph?id set the graph info", %{
     conn: conn,
-    graph: %{id: id, name: name, nodes: nodes, edges: edges, directed: directed}
+    graph: %{id: id, name: name, edges: edges, directed: directed}
   } do
     expected_directed_text = "directed"
     expected_undirected_text = "undirected"
@@ -46,7 +46,6 @@ defmodule PhxLiveviewWeb.Test.Live.CreateGraph do
     {:ok, view, html} = live(conn, ~p"/create-graph?id=#{id}")
 
     assert html =~ name
-    assert html =~ Enum.join(nodes, ",")
     assert html =~ Enum.join(edges, ",")
     assert view |> element("#create-graph-submit", "Actualizar") |> has_element?()
     assert html =~ "value=\"#{graph_directed_value}\" #{selected_text}"
@@ -63,12 +62,11 @@ defmodule PhxLiveviewWeb.Test.Live.CreateGraph do
     %{name: name, nodes: nodes, edges: edges} =
       data = %{
         name: " new graph ",
-        nodes: "a,b,c",
+        nodes: ["A", "B", "C"],
         edges: "a-b,b-c"
       }
 
     view |> element("#name") |> render_change(data)
-    view |> element("#nodes") |> render_change(data)
     view |> element("#edges") |> render_change(data)
 
     view |> element("#create-graph-form") |> render_submit()
@@ -79,9 +77,9 @@ defmodule PhxLiveviewWeb.Test.Live.CreateGraph do
       new_list |> List.last()
 
     assert created_name == name |> String.trim() |> String.capitalize()
-    assert created_nodes == str_to_list(nodes)
     assert created_edges == str_to_list(edges)
     assert directed == false
+    assert created_nodes == nodes
     assert length(current_graphs) + 1 == length(new_list)
   end
 
@@ -92,18 +90,16 @@ defmodule PhxLiveviewWeb.Test.Live.CreateGraph do
       live(conn, ~p"/create-graph?id=#{id}")
 
     updated_name = "updated graph"
-    updated_nodes = ["d", "e", "f"]
     updated_edges = ["d-e", "e-f"]
 
     %{name: name, nodes: nodes, edges: edges} =
       data = %{
         name: updated_name,
-        nodes: Enum.join(updated_nodes, ","),
+        nodes: ["D", "E", "F"],
         edges: Enum.join(updated_edges, ",")
       }
 
     view |> element("#name") |> render_change(data)
-    view |> element("#nodes") |> render_change(data)
     view |> element("#edges") |> render_change(data)
 
     view |> element("#create-graph-form") |> render_submit()
@@ -119,7 +115,7 @@ defmodule PhxLiveviewWeb.Test.Live.CreateGraph do
 
     assert updated_id == id
     assert updated_name == name |> String.trim() |> String.capitalize()
-    assert updated_nodes == str_to_list(nodes)
+    assert updated_nodes == nodes
     assert updated_edges == str_to_list(edges)
     assert directed == false
     assert length(current_graphs) == length(Graphs.list_graphs())
