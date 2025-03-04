@@ -1,4 +1,4 @@
-defmodule PhxLiveviewWeb.Repo.Migrations.CreateUsers do
+defmodule GraphTheoryWeb.Repo.Migrations.CreateUsers do
   use Ecto.Migration
 
   def change do

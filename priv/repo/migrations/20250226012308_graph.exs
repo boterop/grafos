@@ -1,4 +1,4 @@
-defmodule PhxLiveview.Repo.Migrations.Graph do
+defmodule GraphTheory.Repo.Migrations.Graph do
   use Ecto.Migration
 
   def change do

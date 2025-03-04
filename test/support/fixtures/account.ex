@@ -1,9 +1,9 @@
-defmodule PhxLiveview.Test.Fixtures.Account do
+defmodule GraphTheory.Test.Fixtures.Account do
   @moduledoc """
   This module provides functions to help with testing the Account context.
   """
 
-  alias PhxLiveview.{Account.User, Repo}
+  alias GraphTheory.{Account.User, Repo}
 
   def user_fixture(opts \\ []) do
     email = Keyword.get(opts, :email, "some.email@gmail.com")

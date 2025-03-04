@@ -1,10 +1,10 @@
-defmodule PhxLiveview.Test.Fixtures.Graph do
+defmodule GraphTheory.Test.Fixtures.Graph do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `PhxLiveview.Graphs` context.
+  entities via the `GraphTheory.Graphs` context.
   """
 
-  alias PhxLiveview.{Graph, Repo}
+  alias GraphTheory.{Graph, Repo}
 
   def graph_fixture(attrs \\ []) do
     name = Keyword.get(attrs, :name, "some name")

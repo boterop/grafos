@@ -7,23 +7,23 @@
 # General application configuration
 import Config
 
-config :phx_liveview,
-  ecto_repos: [PhxLiveview.Repo],
+config :graph_theory,
+  ecto_repos: [GraphTheory.Repo],
   generators: [timestamp_type: :utc_datetime]
 
-config :phx_liveview, PhxLiveview.Guardian,
-  issuer: "phx_liveview",
+config :graph_theory, GraphTheory.Guardian,
+  issuer: "graph_theory",
   secret_key: System.get_env("JWT_SECRET")
 
 # Configures the endpoint
-config :phx_liveview, PhxLiveviewWeb.Endpoint,
+config :graph_theory, GraphTheoryWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: PhxLiveviewWeb.ErrorHTML, json: PhxLiveviewWeb.ErrorJSON],
+    formats: [html: GraphTheoryWeb.ErrorHTML, json: GraphTheoryWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: PhxLiveview.PubSub,
+  pubsub_server: GraphTheory.PubSub,
   live_view: [signing_salt: "E2CXTOLj"]
 
 # Configures the mailer
@@ -33,12 +33,12 @@ config :phx_liveview, PhxLiveviewWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :phx_liveview, PhxLiveview.Mailer, adapter: Swoosh.Adapters.Local
+config :graph_theory, GraphTheory.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
-  phx_liveview: [
+  graph_theory: [
     args:
       ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
@@ -48,7 +48,7 @@ config :esbuild,
 # Configure tailwind (the version is required)
 config :tailwind,
   version: "3.4.3",
-  phx_liveview: [
+  graph_theory: [
     args: ~w(
       --config=tailwind.config.js
       --input=css/app.css
@@ -65,7 +65,7 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :phx_liveview, :api, http_client: HTTPoison
+config :graph_theory, :api, http_client: HTTPoison
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

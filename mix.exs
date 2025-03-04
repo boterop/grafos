@@ -1,9 +1,9 @@
-defmodule PhxLiveview.MixProject do
+defmodule GraphTheory.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :phx_liveview,
+      app: :graph_theory,
       version: "0.1.0",
       elixir: "~> 1.17.3",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -29,7 +29,7 @@ defmodule PhxLiveview.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {PhxLiveview.Application, []},
+      mod: {GraphTheory.Application, []},
       extra_applications: [:logger, :runtime_tools, :os_mon]
     ]
   end
@@ -94,10 +94,10 @@ defmodule PhxLiveview.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["tailwind phx_liveview", "esbuild phx_liveview"],
+      "assets.build": ["tailwind graph_theory", "esbuild graph_theory"],
       "assets.deploy": [
-        "tailwind phx_liveview --minify",
-        "esbuild phx_liveview --minify",
+        "tailwind graph_theory --minify",
+        "esbuild graph_theory --minify",
         "phx.digest"
       ]
     ]
