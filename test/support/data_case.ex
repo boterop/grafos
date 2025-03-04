@@ -1,4 +1,4 @@
-defmodule PhxLiveview.DataCase do
+defmodule GraphTheory.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -10,7 +10,7 @@ defmodule PhxLiveview.DataCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use PhxLiveview.DataCase, async: true`, although
+  by setting `use GraphTheory.DataCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -20,17 +20,17 @@ defmodule PhxLiveview.DataCase do
 
   using do
     quote do
-      alias PhxLiveview.Repo
+      alias GraphTheory.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import PhxLiveview.DataCase
+      import GraphTheory.DataCase
     end
   end
 
   setup tags do
-    PhxLiveview.DataCase.setup_sandbox(tags)
+    GraphTheory.DataCase.setup_sandbox(tags)
     :ok
   end
 
@@ -38,7 +38,7 @@ defmodule PhxLiveview.DataCase do
   Sets up the sandbox based on the test tags.
   """
   def setup_sandbox(tags) do
-    pid = SQL.Sandbox.start_owner!(PhxLiveview.Repo, shared: not tags[:async])
+    pid = SQL.Sandbox.start_owner!(GraphTheory.Repo, shared: not tags[:async])
     on_exit(fn -> SQL.Sandbox.stop_owner(pid) end)
   end
 

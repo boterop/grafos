@@ -1,4 +1,4 @@
-defmodule PhxLiveview.Mocks.HTTPoison do
+defmodule GraphTheory.Mocks.HTTPoison do
   @moduledoc """
   Mock for HTTPoison
   """

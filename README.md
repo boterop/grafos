@@ -1,4 +1,4 @@
-# PhxLiveview
+# GraphTheory
 
 To start your Phoenix server:
 
@@ -10,7 +10,7 @@ To start your Phoenix server:
   DB_USER=postgres
   DB_PASSWORD=postgres
   DB_HOST=db
-  DB_NAME=phx_liveview_dev
+  DB_NAME=graph_theory_dev
   JWT_SECRET=holi
   SECRET_KEY=test-secret-key
   ```
