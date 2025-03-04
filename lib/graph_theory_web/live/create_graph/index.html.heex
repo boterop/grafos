@@ -1,0 +1,69 @@
+<main class="grid grid-cols-1 lg:grid-cols-2 gap-16 sm:flex-row items-start justify-between">
+  <div class="flex flex-col gap-6">
+    <h1 class="text-2xl font-bold capitalize">crear grafo</h1>
+    <div class="flex flex-col gap-4">
+      <form id="create-graph-form" phx-submit="create" class="flex flex-col gap-4">
+        <input
+          phx-change="update_name"
+          id="name"
+          class="rounded"
+          name="name"
+          value={@graph.name}
+          type="text"
+          placeholder="Nombre"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+        />
+        <select name="type" phx-change="toggle_directed" class="rounded">
+          <option
+            value="undirected"
+            selected={
+              if !@graph.directed do
+                "selected"
+              end
+            }
+          >
+            Grafo no dirigido
+          </option>
+          <option
+            value="directed"
+            selected={
+              if @graph.directed do
+                "selected"
+              end
+            }
+          >
+            Grafo dirigido
+          </option>
+        </select>
+        <input
+          phx-change="update_edges"
+          id="edges"
+          name="edges"
+          value={Enum.join(@graph.edges, ",")}
+          type="text"
+          placeholder="Aristas (ej: A-B,B-C)"
+        />
+        <p class="text-sm text-zinc-500">
+          Si es ponderado, ponga el valor al final de la arista
+          <span class="text-nowrap">(ej: A-B:10, B-C:5)</span>
+        </p>
+        <%= if @error do %>
+          <p class="text-sm text-rose-600">{@error}</p>
+        <% end %>
+        <button
+          id="create-graph-submit"
+          type="submit"
+          class="bg-orange-500 p-4 py-2 rounded-lg text-white shadow-md hover:bg-orange-400"
+        >
+          {if @graph.id, do: "Actualizar", else: "Crear"}
+        </button>
+      </form>
+    </div>
+  </div>
+  <aside class="flex flex-col gap-6">
+    <h1 class="text-2xl text-center font-bold capitalize">previsualizar</h1>
+    <%= if @graph_img do %>
+      <img src={@graph_img} alt="grafo" loading="lazy" />
+    <% end %>
+  </aside>
+</main>

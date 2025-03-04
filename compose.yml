@@ -11,15 +11,14 @@ services:
       - "5432:5432"
     volumes:
       - db:/var/lib/postgresql/data
-  phx_liveview:
+  graph_theory:
     build:
       context: .
       target: builder
       args:
         MIX_ENV: dev
     restart: unless-stopped
-    ports:
-      - "4000:4000"
+    network_mode: host
     volumes:
       - .:/app
     env_file:

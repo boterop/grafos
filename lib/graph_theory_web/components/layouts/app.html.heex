@@ -1,0 +1,26 @@
+<main class="grid min-h-screen grid-rows-[auto_1fr]">
+  <header class="px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
+      <a href="/"><img src={~p"/images/node.svg"} width="36" /></a>
+      <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
+        <a href="https://www.linkedin.com/in/boterop/" class="hover:text-zinc-700">
+          @boterop
+        </a>
+        <a href="https://github.com/boterop/grafos" class="hover:text-zinc-700">
+          GitHub
+        </a>
+      </div>
+    </div>
+  </header>
+  <main class="px-4 py-10 h-full sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-6xl">
+      <.flash_group flash={@flash} /> {@inner_content}
+    </div>
+  </main>
+  <footer class="flex items-center justify-between h-6 px-4 py-8 sm:px-6 lg:px-8">
+    <span class="text-sm text-zinc-500"> © 2025 Santiago Botero </span>
+    <div class="flex items-center gap-2">
+      <span>made with phoenix v{Application.spec(:phoenix, :vsn)}</span>
+    </div>
+  </footer>
+</main>

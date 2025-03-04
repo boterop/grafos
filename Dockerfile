@@ -34,4 +34,4 @@ COPY --from=builder /app/_build/prod/rel/${APP_NAME} ./
 
 USER nobody
 
-CMD ["/app/bin/server"]
+CMD ["sh", "-c", "/app/bin/migrate && /app/bin/server"]
