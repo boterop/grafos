@@ -9,10 +9,10 @@ To start your Phoenix server:
   ```.env
   DB_USER=postgres
   DB_PASSWORD=postgres
-  DB_HOST=db
+  DB_HOST=localhost
   DB_NAME=graph_theory_dev
-  JWT_SECRET=holi
-  SECRET_KEY=test-secret-key
+  JWT_SECRET=super-secret
+  SECRET_KEY=mega-super-secret
   ```
 
 ## With docker
@@ -32,8 +32,8 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 ## Learn more
 
-- Official website: https://www.phoenixframework.org/
-- Guides: https://hexdocs.pm/phoenix/overview.html
-- Docs: https://hexdocs.pm/phoenix
-- Forum: https://elixirforum.com/c/phoenix-forum
-- Source: https://github.com/phoenixframework/phoenix
+- Official website: <https://www.phoenixframework.org/>
+- Guides: <https://hexdocs.pm/phoenix/overview.html>
+- Docs: <https://hexdocs.pm/phoenix>
+- Forum: <https://elixirforum.com/c/phoenix-forum>
+- Source: <https://github.com/phoenixframework/phoenix>
