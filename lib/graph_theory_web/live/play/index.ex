@@ -9,7 +9,7 @@ defmodule GraphTheoryWeb.Live.Play.Index do
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
-    %{year: year, month: month, day: day} = DateTime.utc_now()
+    current_date = Date.utc_today()
 
     socket =
       id
@@ -18,21 +18,33 @@ defmodule GraphTheoryWeb.Live.Play.Index do
         %Graph{} = graph ->
           socket
           |> assign(:graph, graph)
+          |> assign(:from, graph.nodes |> Enum.at(0))
+          |> assign(:to, graph.nodes |> Enum.at(0))
 
         _error ->
           socket |> redirect_home()
       end
+      |> assign(:date, current_date)
+      |> assign(:min_date, current_date)
       |> assign(:graph_img, nil)
       |> assign(:tagged_graph_img, nil)
-      |> assign(:from, nil)
-      |> assign(:to, nil)
-      |> assign(:date, "#{year}-#{month}-#{day}")
+      |> assign(:total, nil)
 
     {:ok, socket}
   end
 
   @impl true
   def mount(_params, _session, socket), do: redirect_home(socket)
+
+  @impl true
+  def handle_event("update_from", %{"from" => from}, socket) do
+    {:noreply, socket |> assign(:from, from) |> assign(:total, nil)}
+  end
+
+  @impl true
+  def handle_event("update_to", %{"to" => to}, socket) do
+    {:noreply, socket |> assign(:to, to) |> assign(:total, nil)}
+  end
 
   @impl true
   def handle_event("update_date", %{"date" => date}, socket) do
@@ -53,18 +65,37 @@ defmodule GraphTheoryWeb.Live.Play.Index do
         _ -> nil
       end
 
-    {tagged_graph, result_graph} =
+    {tagged_graph, result_graph, total} =
       graph
       |> apply_discounts(date)
       |> Dijkstra.solve(from, to)
+      |> IO.inspect(label: "Dijkstra Result")
       |> case do
-        {%Graph{} = tags, %Graph{} = result} -> {tags, result}
-        _ -> {%{}, %{}}
+        {%Graph{} = tags, %Graph{} = result, total} -> {tags, result, total}
+        _ -> {%{}, %{}, 0}
+      end
+
+    tagged_graph_img =
+      tagged_graph
+      |> API.create_graph()
+      |> case do
+        {:ok, body} -> "data:image/png;base64,#{Base.encode64(body)}"
+        _ -> nil
+      end
+
+    result_graph_img =
+      result_graph
+      |> API.create_graph()
+      |> case do
+        {:ok, body} -> "data:image/png;base64,#{Base.encode64(body)}"
+        _ -> nil
       end
 
     socket
     |> assign(:graph_img, img)
-    |> assign(:tagged_graph_img, img)
+    |> assign(:tagged_graph_img, tagged_graph_img)
+    |> assign(:result_graph_img, result_graph_img)
+    |> assign(:total, total)
     |> (&{:noreply, &1}).()
   end
 

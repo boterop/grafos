@@ -1,28 +1,40 @@
 <main class="flex flex-col gap-8 w-full items-center justify-center">
   <h1 class="text-2xl text-[#FA7516] font-bold capitalize">resolviendo grafo "{@graph.name}"</h1>
   <header>
-    <form id="graph-form" phx-submit="play" class="flex flex-col lg:flex-row gap-4">
-      <input
-        phx-change="update_from"
-        id="from"
-        name="from"
-        value={@from}
-        type="text"
-        placeholder="Origen"
-      />
-      <input
-        phx-change="update_to"
-        id="to"
-        name="to"
-        value={@to}
-        type="text"
-        placeholder="Destino"
-      />
-      <input
+    <form id="graph-form" phx-submit="play" class="flex flex-col gap-4">
+      <section class="flex gap-4 items-center justify-center">
+        <.input
+          required
+          phx-change="update_from"
+          id="from"
+          class="rounded"
+          name="from"
+          label="Ciudad de origen"
+          type="select"
+          value={@from}
+          options={@graph.nodes}
+        />
+        <.input
+          required
+          phx-change="update_to"
+          id="to"
+          class="rounded"
+          name="to"
+          label="Ciudad de destino"
+          type="select"
+          value={@to}
+          options={@graph.nodes}
+        />
+      </section>
+      <.input
+        required
         phx-change="update_date"
         id="date"
+        class="rounded"
         name="date"
+        label="Fecha de viaje"
         value={@date}
+        min={@min_date}
         type="date"
         placeholder="Fecha de viaje"
       />
@@ -30,20 +42,35 @@
       <button
         id="create-graph-submit"
         type="submit"
-        class="bg-orange-500 p-4 py-2 rounded-lg text-white shadow-md hover:bg-orange-400"
+        class="flex gap-2 items-center justify-center bg-orange-500 p-4 py-2 rounded-lg text-white shadow-md hover:bg-orange-400"
       >
-        <span class="hero-magnifying-glass" />
+        <p class="capitalize">Calcular precio</p>
+        <span class="hero-paper-airplane" />
       </button>
     </form>
   </header>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 sm:flex-row items-start justify-between">
-    <section class="flex flex-col gap-6">
-      <h2 class="w-full text-center text-2xl font-bold capitalize">Grafo original</h2>
-      <img src={@graph_img} alt="grafo" loading="lazy" />
+  <%= if @total do %>
+    <section class="flex flex-col gap-4 p-8 border-2 rounded-xl items-center justify-center shadow-md">
+      <h3 class="text-md font-bold capitalize">Precio estimado para tu vuelo:</h3>
+      <p class="text-4xl font-bold capitalize">
+        ${Integer.to_string(@total)
+        |> String.reverse()
+        |> String.replace(~r/.{3}(?=.)/, "\\0.")
+        |> String.reverse()} USD
+      </p>
+      <p class="text-sm text-zinc-500">{"Vuelo de #{@from} a #{@to} el #{@date}"}</p>
     </section>
-    <section class="flex flex-col gap-6">
-      <h2 class="w-full text-center text-2xl font-bold capitalize">Grafo etiquetado</h2>
-      <img src={@tagged_graph_img} alt="tag" loading="lazy" />
-    </section>
-  </div>
+  <% end %>
+  <%= if @tagged_graph_img do %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 sm:flex-row items-start justify-between">
+      <section class="flex flex-col gap-6">
+        <h2 class="w-full text-center text-2xl font-bold capitalize">Grafo original</h2>
+        <img src={@graph_img} alt="grafo" loading="lazy" />
+      </section>
+      <section class="flex flex-col gap-6">
+        <h2 class="w-full text-center text-2xl font-bold capitalize">Grafo etiquetado</h2>
+        <img src={@tagged_graph_img} alt="tag" loading="lazy" />
+      </section>
+    </div>
+  <% end %>
 </main>
