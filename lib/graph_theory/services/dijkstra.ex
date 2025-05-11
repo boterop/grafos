@@ -48,7 +48,7 @@ defmodule GraphTheory.Services.Dijkstra do
   defp dijkstra([], _prev, _original, tags, _acc), do: tags
 
   defp dijkstra([%{from: from, to: to, value: value} | rest], prev, original, tags, acc) do
-    exist_same_tag? = Enum.any?(tags, fn tag -> tag.from == tag.from and tag.to == to end)
+    exist_same_tag? = Enum.any?(tags, fn tag -> tag.from == from and tag.to == to end)
 
     if from !== prev or exist_same_tag? do
       dijkstra(rest, prev, original, tags, acc)
@@ -71,15 +71,15 @@ defmodule GraphTheory.Services.Dijkstra do
       total_value = tag.value
 
       next_node_tags =
-        dijkstra(
-          original,
-          to,
-          original,
-          final_tags,
-          total_value
-        )
+        dijkstra(rest, prev, original, final_tags, acc)
 
-      dijkstra(rest, prev, original, next_node_tags, acc)
+      dijkstra(
+        original,
+        to,
+        original,
+        next_node_tags,
+        total_value
+      )
     end
   end
 
@@ -93,7 +93,7 @@ defmodule GraphTheory.Services.Dijkstra do
     tags
     |> Enum.map(fn tag ->
       if tag.to == min_tag.to do
-        %{tag | value: min_tag.value}
+        tag |> Map.put(:value, min_tag.value) |> Map.put(:from, min_tag.from)
       else
         tag
       end

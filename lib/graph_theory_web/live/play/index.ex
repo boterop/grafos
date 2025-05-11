@@ -91,7 +91,7 @@ defmodule GraphTheoryWeb.Live.Play.Index do
 
   defp redirect_home(socket), do: push_navigate(socket, to: "/")
 
-  @spec apply_discounts(Graph.t(), String.t()) :: Graph.t()
+  @spec apply_discounts(map(), String.t()) :: map()
   defp apply_discounts(graph, date) do
     discounts = %{"7" => %{"LIMA-CUSCO" => 1.5}}
 
