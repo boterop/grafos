@@ -25,6 +25,7 @@ defmodule GraphTheoryWeb.Router do
 
     live "/", Live.Home.Index, :index
     live "/create-graph", Live.CreateGraph.Index, :index
+    live "/play/:id", Live.Play.Index, :index
     live "/login", Live.Login.Index, :index
     live "/register", Live.Register.Index, :index
   end

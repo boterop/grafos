@@ -6,15 +6,6 @@ To start your Phoenix server:
 
   For test cases, you can use the following values:
 
-  ```.env
-  DB_USER=postgres
-  DB_PASSWORD=postgres
-  DB_HOST=localhost
-  DB_NAME=graph_theory_dev
-  JWT_SECRET=super-secret
-  SECRET_KEY=mega-super-secret
-  ```
-
 ## With docker
 
 ```sh
