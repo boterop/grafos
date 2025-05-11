@@ -3,9 +3,7 @@ defmodule GraphTheory.Services.Dijkstra do
   Service to solve graphs using dijkstra algorithm.
   """
 
-  alias GraphTheory.Graph
-
-  @spec solve(Graph.t(), String.t(), String.t()) :: {Graph.t(), integer()}
+  @spec solve(map(), String.t(), String.t()) :: {map(), integer()}
   def solve(graph, from, to) do
     tags =
       graph.edges
@@ -32,6 +30,13 @@ defmodule GraphTheory.Services.Dijkstra do
       tags
       |> Enum.filter(fn %{to: current} -> current == to end)
       |> Enum.at(0)
+      |> case do
+        cost when is_map(cost) ->
+          cost
+
+        _ ->
+          %{value: 0}
+      end
 
     result_graph = graph |> Map.put(:edges, result_edges)
 

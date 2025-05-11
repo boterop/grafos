@@ -67,10 +67,6 @@ defmodule GraphTheoryWeb.Live.Play.Index do
       graph
       |> apply_discounts(date)
       |> Dijkstra.solve(from, to)
-      |> case do
-        {%Graph{} = result, total} -> {result, total}
-        _ -> {%{}, 0}
-      end
 
     result_graph_img =
       result_graph
