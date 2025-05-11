@@ -26,9 +26,7 @@ defmodule GraphTheoryWeb.Live.Play.Index do
       end
       |> assign(:date, current_date)
       |> assign(:min_date, current_date)
-      |> assign(:graph_img, nil)
-      |> assign(:tagged_graph_img, nil)
-      |> assign(:total, nil)
+      |> assign(:result, nil)
 
     {:ok, socket}
   end
@@ -38,17 +36,17 @@ defmodule GraphTheoryWeb.Live.Play.Index do
 
   @impl true
   def handle_event("update_from", %{"from" => from}, socket) do
-    {:noreply, socket |> assign(:from, from) |> assign(:total, nil)}
+    {:noreply, socket |> assign(:from, from) |> assign(:result, nil)}
   end
 
   @impl true
   def handle_event("update_to", %{"to" => to}, socket) do
-    {:noreply, socket |> assign(:to, to) |> assign(:total, nil)}
+    {:noreply, socket |> assign(:to, to) |> assign(:result, nil)}
   end
 
   @impl true
   def handle_event("update_date", %{"date" => date}, socket) do
-    {:noreply, assign(socket, :date, date)}
+    {:noreply, socket |> assign(:date, date) |> assign(:result, nil)}
   end
 
   @impl true
@@ -65,22 +63,13 @@ defmodule GraphTheoryWeb.Live.Play.Index do
         _ -> nil
       end
 
-    {tagged_graph, result_graph, total} =
+    {result_graph, total} =
       graph
       |> apply_discounts(date)
       |> Dijkstra.solve(from, to)
-      |> IO.inspect(label: "Dijkstra Result")
       |> case do
-        {%Graph{} = tags, %Graph{} = result, total} -> {tags, result, total}
-        _ -> {%{}, %{}, 0}
-      end
-
-    tagged_graph_img =
-      tagged_graph
-      |> API.create_graph()
-      |> case do
-        {:ok, body} -> "data:image/png;base64,#{Base.encode64(body)}"
-        _ -> nil
+        {%Graph{} = result, total} -> {result, total}
+        _ -> {%{}, 0}
       end
 
     result_graph_img =
@@ -91,16 +80,18 @@ defmodule GraphTheoryWeb.Live.Play.Index do
         _ -> nil
       end
 
-    socket
-    |> assign(:graph_img, img)
-    |> assign(:tagged_graph_img, tagged_graph_img)
-    |> assign(:result_graph_img, result_graph_img)
-    |> assign(:total, total)
-    |> (&{:noreply, &1}).()
+    result = %{
+      graph_img: img,
+      result_graph_img: result_graph_img,
+      total: total
+    }
+
+    {:noreply, assign(socket, :result, result)}
   end
 
   defp redirect_home(socket), do: push_navigate(socket, to: "/")
 
+  @spec apply_discounts(Graph.t(), String.t()) :: Graph.t()
   defp apply_discounts(graph, date) do
     discounts = %{"7" => %{"LIMA-CUSCO" => 1.5}}
 

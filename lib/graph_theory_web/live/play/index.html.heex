@@ -49,11 +49,11 @@
       </button>
     </form>
   </header>
-  <%= if @total do %>
+  <%= if @result do %>
     <section class="flex flex-col gap-4 p-8 border-2 rounded-xl items-center justify-center shadow-md">
       <h3 class="text-md font-bold capitalize">Precio estimado para tu vuelo:</h3>
       <p class="text-4xl font-bold capitalize">
-        ${Integer.to_string(@total)
+        ${Integer.to_string(@result.total)
         |> String.reverse()
         |> String.replace(~r/.{3}(?=.)/, "\\0.")
         |> String.reverse()} USD
@@ -61,15 +61,15 @@
       <p class="text-sm text-zinc-500">{"Vuelo de #{@from} a #{@to} el #{@date}"}</p>
     </section>
   <% end %>
-  <%= if @tagged_graph_img do %>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 sm:flex-row items-start justify-between">
+  <%= if @result do %>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 sm:flex-row items-start justify-between">
       <section class="flex flex-col gap-6">
         <h2 class="w-full text-center text-2xl font-bold capitalize">Grafo original</h2>
-        <img src={@graph_img} alt="grafo" loading="lazy" />
+        <img src={@result.graph_img} alt="grafo" loading="lazy" />
       </section>
       <section class="flex flex-col gap-6">
-        <h2 class="w-full text-center text-2xl font-bold capitalize">Grafo etiquetado</h2>
-        <img src={@tagged_graph_img} alt="tag" loading="lazy" />
+        <h2 class="w-full text-center text-2xl font-bold capitalize">Grafo resultado</h2>
+        <img src={@result.result_graph_img} alt="tag" loading="lazy" />
       </section>
     </div>
   <% end %>
