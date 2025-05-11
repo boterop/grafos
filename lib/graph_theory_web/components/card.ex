@@ -28,8 +28,8 @@ defmodule GraphTheoryWeb.Card do
         <img src="/images/trash.svg" class="w-6" />
       </button>
       <a
-        id={"edit-graph-#{@graph.id}"}
-        href={"/create-graph?id=#{@graph.id}"}
+        id={"play-#{@graph.id}"}
+        href={"/play/#{@graph.id}"}
         class="flex flex-col gap-2 p-6 shadow-lg hover:shadow-xl rounded-lg border border-zinc-100 bg-white"
       >
         <h3 class="flex items-center justify-between text-lg font-semibold leading-6 text-zinc-900 capitalize">
@@ -48,12 +48,12 @@ defmodule GraphTheoryWeb.Card do
         </article>
       </a>
       <a
-        id={"play-#{@graph.id}"}
-        href={"/play/#{@graph.id}"}
+        id={"edit-graph-#{@graph.id}"}
+        href={"/create-graph?id=#{@graph.id}"}
         type="button"
         class="absolute -right-2 -bottom-2 rounded-full bg-white p-2 shadow-lg brightness-100 hover:brightness-50 transition-all duration-300 ease-in-out"
       >
-        <span class="hero-play w-6 text-green-500" />
+        <span class="hero-pencil w-6 text-green-500" />
       </a>
     </div>
     """
