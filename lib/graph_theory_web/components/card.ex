@@ -47,6 +47,14 @@ defmodule GraphTheoryWeb.Card do
           <span>Aristas: <span class="font-bold">{Enum.count(@graph.edges)}</span></span>
         </article>
       </a>
+      <a
+        id={"play-#{@graph.id}"}
+        href={"/play/#{@graph.id}"}
+        type="button"
+        class="absolute -right-2 -bottom-2 rounded-full bg-white p-2 shadow-lg brightness-100 hover:brightness-50 transition-all duration-300 ease-in-out"
+      >
+        <span class="hero-play w-6 text-green-500" />
+      </a>
     </div>
     """
   end

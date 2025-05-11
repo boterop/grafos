@@ -25,7 +25,8 @@ defmodule GraphTheory.API do
     %{
       nodes: nodes,
       edges: edges |> Enum.map(&format_edge/1),
-      node_color: "#f97316"
+      node_color: "#16E7FA",
+      edge_color: "#C0FA16"
     }
   end
 

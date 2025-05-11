@@ -1,8 +1,6 @@
-version: "3.9"
 services:
   db:
     image: postgres:latest
-    restart: unless-stopped
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -10,14 +8,13 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db:/var/lib/postgresql/data
+      - db:/var/lib/postgres/data
   graph_theory:
     build:
       context: .
       target: builder
       args:
         MIX_ENV: dev
-    restart: unless-stopped
     network_mode: host
     volumes:
       - .:/app

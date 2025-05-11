@@ -11,7 +11,7 @@ defmodule GraphTheory.MixProject do
       aliases: aliases(),
       deps: deps(),
       dialyzer: [
-        plt_add_apps: [:products, :ex_unit, :jason],
+        plt_add_apps: [:graph_theory, :ex_unit, :jason],
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
       ],
       test_coverage: [tool: ExCoveralls],
