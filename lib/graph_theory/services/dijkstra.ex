@@ -43,20 +43,29 @@ defmodule GraphTheory.Services.Dijkstra do
     {result_graph, cost.value}
   end
 
-  defp dijkstra(edges, prev, original \\ %{}, tags \\ [], acc \\ 0)
+  defp dijkstra(edges, prev, original \\ %{}, tags \\ [], acc \\ 0, recalculating? \\ false)
 
-  defp dijkstra(edges, prev, %{}, tags, acc), do: dijkstra(edges, prev, edges, tags, acc)
+  defp dijkstra(edges, prev, %{}, tags, acc, recalculating?),
+    do: dijkstra(edges, prev, edges, tags, acc, recalculating?)
 
-  defp dijkstra(edges, prev, original, [], 0),
-    do: dijkstra(edges, prev, original, [%{from: nil, to: prev, value: 0}], 0)
+  defp dijkstra(edges, prev, original, [], 0, recalculating?),
+    do: dijkstra(edges, prev, original, [%{from: nil, to: prev, value: 0}], 0, recalculating?)
 
-  defp dijkstra([], _prev, _original, tags, _acc), do: tags
+  defp dijkstra([], _prev, _original, tags, _acc, _), do: tags
 
-  defp dijkstra([%{from: from, to: to, value: value} | rest], prev, original, tags, acc) do
-    exist_same_tag? = Enum.any?(tags, fn tag -> tag.from == from and tag.to == to end)
+  defp dijkstra(
+         [%{from: from, to: to, value: value} | rest],
+         prev,
+         original,
+         tags,
+         acc,
+         recalculating?
+       ) do
+    exist_same_tag? =
+      Enum.any?(tags, fn tag -> tag.from == from and tag.to == to end) and !recalculating?
 
     if from !== prev or exist_same_tag? do
-      dijkstra(rest, prev, original, tags, acc)
+      dijkstra(rest, prev, original, tags, acc, recalculating?)
     else
       total_value = value + acc
 
@@ -66,7 +75,10 @@ defmodule GraphTheory.Services.Dijkstra do
       final_tags =
         case existing_tag do
           tag when is_map(tag) ->
-            tag |> min_value(new_tag) |> swap_if_value_changes(tags, tag)
+            tag
+            |> min_value(new_tag)
+            |> swap_if_value_changes(tags, tag)
+            |> recalculate(new_tag, original)
 
           _ ->
             tags ++ [new_tag]
@@ -76,7 +88,7 @@ defmodule GraphTheory.Services.Dijkstra do
       total_value = tag.value
 
       next_node_tags =
-        dijkstra(rest, prev, original, final_tags, acc)
+        dijkstra(rest, prev, original, final_tags, acc, recalculating?)
 
       dijkstra(
         original,
@@ -88,11 +100,18 @@ defmodule GraphTheory.Services.Dijkstra do
     end
   end
 
+  @spec recalculate({boolean(), list()}, map(), list()) :: list()
+  defp recalculate({false, tags}, _new_tag, _original), do: tags
+
+  defp recalculate({true, tags}, %{to: prev, value: val}, original) do
+    dijkstra(original, prev, original, tags, val, true)
+  end
+
   @spec min_value(map(), map()) :: map()
   defp min_value(%{value: val1} = g1, %{value: val2}) when val1 < val2, do: g1
   defp min_value(_g1, g2), do: g2
 
-  @spec swap_if_value_changes(map(), list(), map()) :: list()
+  @spec swap_if_value_changes(map(), list(), map()) :: {boolean(), list()}
   defp swap_if_value_changes(%{value: val1} = min_tag, tags, %{value: val2})
        when val1 < val2 do
     tags
@@ -103,7 +122,8 @@ defmodule GraphTheory.Services.Dijkstra do
         tag
       end
     end)
+    |> (&{true, &1}).()
   end
 
-  defp swap_if_value_changes(_, tags, _), do: tags
+  defp swap_if_value_changes(_, tags, _), do: {false, tags}
 end
